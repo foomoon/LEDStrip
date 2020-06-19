@@ -70,7 +70,7 @@ Flares.prototype._randomize = function (count) {
 }
 
 Flares.prototype.animate = function() {
-	animation = requestAnimationFrame(flare);
+	animation = requestAnimationFrame(this.animate.bind(this));
 
 	// slow things down. 1 == full speed
     if ((count++ % 1)) return;
