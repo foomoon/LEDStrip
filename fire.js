@@ -26,10 +26,14 @@ function Fire (ledstrip, opts) {
 
 	this.heat = new Array(this.NUM_LEDS);
 
+	this.then = window.performance.now();
+
 	this.t = 0;										// tick counter
 
 	return this;
 }
+
+
 
 Fire.prototype.init = function() {
 	for (var i = 0, l = this.heat.length; i < l; i++) {
@@ -117,7 +121,7 @@ Fire.prototype.Fire2012 = function() {
  
     // Step 4.  Map from heat cells to LED colors
     for( var j = 0; j < this.NUM_LEDS; j++) {
-        this.ledstrip.buffer[j] = this.HeatColor( this.heat[j]);
+        this.ledstrip.buffer[j] = this.ColorFromPalette( this.heat[j]);
     }
 }
 
@@ -162,13 +166,73 @@ Fire.prototype.HeatColor = function(temperature) {
 }
 
 
-Fire.prototype.animate = function() {
-	animation = requestAnimationFrame(this.animate.bind(this)); 	// preserve our context
+// Fire.prototype.animate = function() {
+// 	animation = requestAnimationFrame(this.animate.bind(this)); 	// preserve our context
 
-	this.Fire2012();
+// 	this.Fire2012();
 
-	this.ledstrip.send(); // display the LED state
+// 	this.ledstrip.send(); // display the LED state
 
-	this.t++; // increment tick
-}
+// 	this.t++; // increment tick
+// }
 
+// D. Claxton Update 2020 June 19
+
+Fire.prototype.animate = function(now) {
+	//Fire animation
+	animation = requestAnimationFrame(this.animate.bind(this)) // preserve our context
+
+	var now = window.performance.now();
+  	//now = newtime;
+  	elapsed = now - this.then || 0
+  
+	// if enough time has elapsed, draw the next frame
+	let fpsInterval = 1000 / this.FRAMES_PER_SECOND
+  
+	if (elapsed > fpsInterval) {
+	  // Get ready for next frame by setting then=now, but...
+	  // Also, adjust for fpsInterval not being multiple of 16.67
+	  this.then = now - (elapsed % fpsInterval)
+	  // draw stuff here
+	  this.Fire2012()
+  
+	  this.ledstrip.send() // display the LED state
+  
+	  this.t++ // increment tick
+	}
+  }
+  
+  Fire.prototype.ColorFromPalette = function (temperature) {
+  
+	var t = this.scale8_video(temperature, 255)
+	for (var i = 0; i < this.PALETTE.length - 1; i++) {
+	  // find index of closest item in data.pos
+	  if (t <= this.PALETTE[i + 1].pos) {
+		break
+	  }
+	}
+	return interpColor(this.PALETTE[i], this.PALETTE[i + 1], t)
+  }
+
+  Fire.prototype.update = function update(effect) {
+	// Takes in object in form of 
+	// effect = {
+	// 	cool: {
+	// 		value: 0,
+	// 	},
+	// 	spark: {
+	// 		value: 0,
+	// 	},
+	// 	gradient: {
+	// 		value: []
+	// 	}
+	// }
+	animation = cancelAnimationFrame(animation)
+	this.COOLING = effect.cool.value
+	this.SPARKING = effect.spark.value
+	this.PALETTE = effect.gradient.value
+	this.then = window.performance.now()
+	this.FRAMES_PER_SECOND = effect.speed.value
+
+	this.animate()
+  }
