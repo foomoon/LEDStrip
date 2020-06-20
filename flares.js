@@ -73,7 +73,7 @@ Flares.prototype.animate = function() {
 	animation = requestAnimationFrame(this.animate.bind(this));
 
 	// slow things down. 1 == full speed
-    if ((count++ % 1)) return;
+    //if ((count++ % 1)) return;
 
 	if (flare_pause) {
 		--flare_pause;
