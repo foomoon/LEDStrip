@@ -5,12 +5,12 @@
  */
 
 /*
-var flare_count = 16;
-var current_flare = 0;
-var flare_pause = 20;
-var flares = Array(flare_count);
+var this.flare_count = 16;
+var this.current_flare = 0;
+var this.flare_pause = 20;
+var flares = Array(this.flare_count);
 
-for (var i = 0; i < flare_count; i++) {
+for (var i = 0; i < this.flare_count; i++) {
 	//flares[i] = new Flare([255, 255, 255], Math.floor(length/i), i, i*2);
 	flares[i] = new Flare();
 }
@@ -21,6 +21,10 @@ function Flares(color, position, amplitude, speed) {
 	this.position = position || 0;
 	this.amplitude = amplitude || 0;
 	this.speed = speed || 0;
+
+	this.flare_pause = 20;
+	this.current_flare = 0;
+	this.flare_count = 16;
 
 	return this;
 }
@@ -75,19 +79,19 @@ Flares.prototype.animate = function() {
 	// slow things down. 1 == full speed
     //if ((count++ % 1)) return;
 
-	if (flare_pause) {
-		--flare_pause;
+	if (this.flare_pause) {
+		--this.flare_pause;
 	} else {
 		//console.log(flares);
-		if(!flares[current_flare].amplitude) {
-			flares[current_flare]._randomize(length);
-			++current_flare;
-			if (current_flare >= flare_count) current_flare = 0;
-			flare_pause = Math.floor(Math.random() * 50);
+		if(!flares[this.current_flare].amplitude) {
+			flares[this.current_flare]._randomize(length);
+			++this.current_flare;
+			if (this.current_flare >= this.flare_count) this.current_flare = 0;
+			this.flare_pause = Math.floor(Math.random() * 50);
 		}
 	}
 
-	for (var i = 0; i < flare_count; i++) {
+	for (var i = 0; i < this.flare_count; i++) {
 		flares[i].step(strip.leds);
 	}
 
