@@ -8,7 +8,7 @@
 
 function ColorCycle (ledstrip) {
 	this.ledstrip = ledstrip;
-	this.ledstrip.clearLeds();
+	this.ledstrip.clear();
 	this.sequence = [];
 
 	return this;
@@ -27,7 +27,7 @@ ColorCycle.prototype.scroll = function (new_color) {
 /**
  * main animation loop
  */
-ColorCycle.prototype.color_cycle = function () {
+ColorCycle.prototype.animate = function () {
 	animation = requestAnimationFrame(this.color_cycle.bind(this));
 	var idx;
 
