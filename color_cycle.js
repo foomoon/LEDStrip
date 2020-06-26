@@ -28,7 +28,7 @@ ColorCycle.prototype.scroll = function (new_color) {
  * main animation loop
  */
 ColorCycle.prototype.animate = function () {
-	animation = requestAnimationFrame(this.color_cycle.bind(this));
+	animation = requestAnimationFrame(this.animate.bind(this));
 	var idx;
 
 	for (idx = 0, seqcount = this.sequence.length - 1; idx < seqcount; ++idx) { //forwards...
