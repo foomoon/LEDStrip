@@ -214,6 +214,19 @@ Fire.prototype.animate = function(now) {
 	return interpColor(this.PALETTE[i], this.PALETTE[i + 1], t)
   }
 
+  function interpColor(left, right, curPos) {
+	let newColor = [0, 0, 0];
+	let components = ["r", "g", "b"];
+	var percentage = (curPos - left.pos) / (right.pos - left.pos);
+  
+	for (var i = 0; i < components.length; i++) {
+	  c = components[i];
+	  newColor[i] = Math.round(left[c] + (right[c] - left[c]) * percentage);
+	}
+  
+	return newColor;
+  }
+
   Fire.prototype.update = function update(effect) {
 	// Takes in object in form of 
 	// effect = {
